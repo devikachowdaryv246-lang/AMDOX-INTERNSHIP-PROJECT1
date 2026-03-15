@@ -1,0 +1,17 @@
+from prophet import Prophet
+
+# Prophet requires a specific format: 'ds' for date and 'y' for value
+prophet_df = df.reset_index()[['Date', 'Price']]
+prophet_df.columns = ['ds', 'y']
+
+model_p = Prophet(daily_seasonality=True)
+model_p.fit(prophet_df)
+
+# Create future dates
+future = model_p.make_future_dataframe(periods=7)
+forecast_p = model_p.predict(future)
+
+# Plotting Prophet's forecast
+model_p.plot(forecast_p)
+plt.title("Bitcoin Price Prediction using Prophet")
+plt.show()
