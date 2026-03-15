@@ -1,0 +1,17 @@
+from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+# --- ARIMA Model ---
+# Order (p, d, q): (5, 1, 0) is a common starting point
+arima_model = ARIMA(data, order=(5, 1, 0))
+arima_result = arima_model.fit()
+arima_forecast = arima_result.forecast(steps=7) # Predict next 7 days
+
+# --- SARIMA Model ---
+# Seasonal Order (P, D, Q, s): Here s=7 for weekly seasonality
+sarima_model = SARIMAX(data, order=(1, 1, 1), seasonal_order=(1, 1, 1, 7))
+sarima_result = sarima_model.fit()
+sarima_forecast = sarima_result.forecast(steps=7)
+
+print("ARIMA Forecast:", arima_forecast.values)
+print("SARIMA Forecast:", sarima_forecast.values)
