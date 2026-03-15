@@ -1,0 +1,26 @@
+import pandas as pd
+import numpy as np
+
+def calculate_volatility(file_path):
+    # Load and clean data
+    df = pd.read_csv(file_path)
+    df['Price'] = df['Price'].str.replace(',', '').astype(float)
+    df['Date'] = pd.to_datetime(df['Date'])
+    df = df.sort_values('Date')
+
+    # 1. Calculate Daily Returns
+    df['Returns'] = df['Price'].pct_change()
+
+    # 2. Calculate 7-day Rolling Volatility (Standard Deviation)
+    # We multiply by sqrt(365) to annualize it, or keep it daily for crypto
+    df['7day_Volatility'] = df['Returns'].rolling(window=7).std()
+
+    # 3. Identify "High Volatility" days (e.g., top 10% of swings)
+    threshold = df['7day_Volatility'].quantile(0.9)
+    df['Is_High_Volatility'] = df['7day_Volatility'] > threshold
+
+    return df[['Date', 'Price', '7day_Volatility', 'Is_High_Volatility']]
+
+# Usage
+vol_df = calculate_volatility('Bitcoin Historical Data.csv')
+print(vol_df.tail())
