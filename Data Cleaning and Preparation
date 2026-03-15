@@ -1,0 +1,18 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import MinMaxScaler
+
+# Load data
+df = pd.read_csv('Bitcoin Historical Data.csv')
+
+# Clean 'Price' column: remove commas and convert to float
+df['Price'] = df['Price'].str.replace(',', '').astype(float)
+
+# Convert 'Date' to datetime and sort
+df['Date'] = pd.to_datetime(df['Date'])
+df = df.sort_values('Date')
+
+# Set Date as index for ARIMA/SARIMA
+df.set_index('Date', inplace=True)
+data = df['Price']
